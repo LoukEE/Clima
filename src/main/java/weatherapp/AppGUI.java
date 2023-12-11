@@ -5,12 +5,14 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import java.awt.image.BufferedImage;
+import java.awt.Cursor;
 import java.awt.Font;
 
 
@@ -59,8 +61,8 @@ public class AppGUI extends JFrame {
         //descriçao do clima
         JLabel conditionDesc = new JLabel("Chuvoso");
         conditionDesc.setBounds(0,405,450,36);
-        conditionDesc.setFont(new Font("Dialog", Font.BOLD, 32));
-        conditionDesc.setHorizontalTextPosition(SwingConstants.CENTER);
+        conditionDesc.setFont(new Font("Dialog", Font.PLAIN, 32));
+        conditionDesc.setHorizontalAlignment(SwingConstants.CENTER);
         add(conditionDesc);
 
         //imagem da humidade
@@ -82,6 +84,13 @@ public class AppGUI extends JFrame {
         windspeedText.setBounds(310, 500, 115, 55);
         windspeedText.setFont(new Font("Dialog", Font.PLAIN, 16));
         add(windspeedText);
+
+        //botao de pesquisa
+        JButton searchButton = new JButton(loadImage("src/assets/search.png"));
+        searchButton.setBounds(375, 13, 47, 45);
+        //muda o cursor para uma mao quando este passa em cima do botao
+        searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        add(searchButton);
         
 
     }
