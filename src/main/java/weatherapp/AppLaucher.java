@@ -10,6 +10,7 @@ public class AppLaucher extends JFrame{
             public void run(){
 
                 new AppGUI().setVisible(true);
+                // System.out.println(WeatherApp.getLocationData(""));
                 
             }
         });

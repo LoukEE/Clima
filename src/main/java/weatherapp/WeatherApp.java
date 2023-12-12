@@ -16,6 +16,38 @@ public class WeatherApp {
     //esté metodo vai baixar os dados do clima no formato JSON 
     public static JSONObject getWeatherData(String locationName){
         JSONArray locationData = getLocationData(locationName);
+        
+        JSONObject location = (JSONObject) locationData.get(0);
+        double latitude =  (double) location.get("latitude");
+        double longitude = (double) location.get("longitude");
+        //url da API do clima;
+        String urlString = "https://api.open-meteo.com/v1/forecast?latitude=" +latitude+ "&longitude=" +longitude+ "&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=America%2FSao_Paulo"; 
+
+        //chamando a API acima 
+        try {
+            HttpURLConnection conn = fetchApiResponse(urlString);
+            
+            if(conn.getResponseCode() != 200){
+                System.out.println("Erro: Não foi possivel conectar-se a API");
+                return null;
+            }else{
+                StringBuilder resultJson = new StringBuilder(); 
+                Scanner scanner = new Scanner(conn.getInputStream());
+                while(scanner.hasNext()){
+                    resultJson.append(scanner.nextLine());
+                }
+
+                scanner.close();
+                conn.disconnect();
+
+                JSONParser parser = new JSONParser(); 
+                JSONObject resulJsonObject = (JSONObject ) parser.parse(String.valueOf(resultJson));
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //Chamando a API e pegando as coordenadas da localizaçao dada
