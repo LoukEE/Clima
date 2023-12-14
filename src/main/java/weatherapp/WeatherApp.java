@@ -6,6 +6,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import org.json.simple.JSONArray;
@@ -41,7 +43,15 @@ public class WeatherApp {
                 conn.disconnect();
 
                 JSONParser parser = new JSONParser(); 
-                JSONObject resulJsonObject = (JSONObject ) parser.parse(String.valueOf(resultJson));
+                JSONObject resultJsonObject = (JSONObject ) parser.parse(String.valueOf(resultJson));
+                //buscando a hora da API (urlString = http...timezone=America%2FSao_Paulo)
+                //"hourly" se refere à tag JSON.
+                JSONObject hourly = (JSONObject) resultJsonObject.get("hourly");
+                //time é um array dentro da tag hourly
+                JSONArray time = (JSONArray) hourly.get("time");
+                int index = findIndexOfCurrentTime(time);
+
+
             }
 
 
@@ -101,6 +111,7 @@ public class WeatherApp {
     }
     //Fazendo a conexao com a API
     private static HttpURLConnection fetchApiResponse(String urlString){
+
         try{
             //convertendo uri para url
             URI uri = new URI(urlString);
@@ -120,5 +131,34 @@ public class WeatherApp {
             e.printStackTrace();
         }
         return null; //caso nao o try nao seja true
+    }
+    
+    //percorre a lista de horários e ver qual deles corresponde ao nosso horário atual
+    private static int findIndexOfCurrentTime (JSONArray timeList){
+        String currentTime = getCurrentTime();
+
+        for(int i = 0; i < timeList.size(); i++){
+            String time = (String) timeList.get(i);
+            // equalsIgnoreCase: busca igualdades ignorando camel case, ou seja, maiusculas e minusculas;
+            if (time.equalsIgnoreCase(currentTime)){
+                return i; 
+            }
+        }
+
+        return 0;
+
+    }
+
+    public static String getCurrentTime(){
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss"); 
+       // Deve estar formatado como está no JSON 
+
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':00'"); 
+         
+        String formattedDateTime = currentDateTime.format(formatter); 
+
+        return formattedDateTime; 
     }
 }
